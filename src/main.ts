@@ -5,23 +5,34 @@ import {Results} from "@mediapipe/hands";
 import {HAND_PARTS} from "./Global/HandParts";
 import {PinchHandler} from "./Classes/PinchHandler";
 import {PinchesController} from "./Classes/PinchesController";
-import {RIGHT_PINCH_IDS} from "./Global/PinchMap";
+import {LEFT_PINCH_IDS, RIGHT_PINCH_IDS} from "./Global/PinchMap";
 import * as Tone from 'tone'
 import {CursorController} from "./Classes/CursorController";
 import {SynthController} from "./Classes/SynthController";
+import {Sampler} from "./Classes/Sampler";
 const handController = new HandController()
 const canvasController = new CanvasController()
 const pinches = new PinchesController()
 
 
-//Get button element with id "init"
 const initButton = document.getElementById("init") as HTMLButtonElement
 initButton.addEventListener("click", init)
 let cursorController : CursorController
 
+//Get button with id "pause"
+const synthController = new SynthController("C2 major")
+const sampler = new Sampler()
 
-const synthController = new SynthController("C4 major")
 let active = false
+const pauseButton = document.getElementById("pause") as HTMLButtonElement
+
+pauseButton.addEventListener("click", pause)
+
+function pause() {
+    active = !active
+    pauseButton.innerText = active ? "Pause" : "Resume"
+}
+
 
 function init() {
     Tone.start()
@@ -36,6 +47,7 @@ function onResult(handsData : Results) {
         canvasController.drawCanvas(handsData)
         pinches.updatePinches(handsData)
         cursorController.moveCursors(handsData)
+        synthController.refreshHand(handsData)
 
     }
 }
@@ -76,6 +88,21 @@ document.addEventListener(PinchHandler.PINCH_EVENTS.START + RIGHT_PINCH_IDS[3].n
 
 document.addEventListener(PinchHandler.PINCH_EVENTS.STOP + RIGHT_PINCH_IDS[3].name, () => {
     synthController.noteStopEvent()
+})
+
+
+//Drums
+
+document.addEventListener(PinchHandler.PINCH_EVENTS.START + LEFT_PINCH_IDS[0].name, () => {
+    sampler.playKick()
+})
+
+document.addEventListener(PinchHandler.PINCH_EVENTS.START + LEFT_PINCH_IDS[2].name, () => {
+    sampler.playSnare()
+})
+
+document.addEventListener(PinchHandler.PINCH_EVENTS.START + LEFT_PINCH_IDS[1].name, () => {
+    sampler.playHihat()
 })
 
 

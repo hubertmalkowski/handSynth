@@ -23,7 +23,7 @@ export class PinchHandler {
     };
 
     OPTIONS = {
-        PINCH_DELAY_MS: 30,
+        PINCH_DELAY_MS: 20,
     };
 
 

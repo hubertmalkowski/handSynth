@@ -163,3 +163,9 @@ canvas {
 .wand[data-hand='left']::after{
   border-color: #BF6D4E;
 }
+
+#pause {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+}
